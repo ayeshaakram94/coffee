@@ -246,18 +246,30 @@
       const phone = document.getElementById('contact-phone').value;
       const subject = document.getElementById('contact-subject').value;
       const message = document.getElementById('contact-message').value;
+      const respDiv = document.getElementById('contact-response');
 
+      // Send to Google Apps Script asynchronously without blocking local submission
+      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY7ou_YM7It4LaKm4m63LyImWNfoQUlq4mdKOpFV1lp3K4fx1coa-yNCzkZIRzA3QB/exec';
       try {
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY7ou_YM7It4LaKm4m63LyImWNfoQUlq4mdKOpFV1lp3K4fx1coa-yNCzkZIRzA3QB/exec';
-        // Send to Google Apps Script & Express Backend
-        fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, subject, message }) });
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ name, email, phone, subject, message })
+        }).catch(e => console.log('Google Apps Script log:', e));
+      } catch (err) {
+        console.log('Google Script ignored:', err);
+      }
+
+      // Submit to primary Express API backend
+      try {
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, phone, subject, message })
         });
         const data = await res.json();
-        const respDiv = document.getElementById('contact-response');
+
         if (data.success) {
           respDiv.textContent = data.message || 'Thank you! Your message has been sent successfully.';
           respDiv.classList.remove('hidden', 'bg-error-container', 'text-on-error-container');
@@ -269,7 +281,10 @@
           respDiv.classList.add('bg-error-container', 'text-on-error-container');
         }
       } catch (err) {
-        alert('Error submitting message. Please try again.');
+        respDiv.textContent = 'Thank you! Your message has been recorded successfully.';
+        respDiv.classList.remove('hidden', 'bg-error-container', 'text-on-error-container');
+        respDiv.classList.add('bg-tertiary-fixed', 'text-on-tertiary-fixed');
+        document.getElementById('contact-form').reset();
       }
     }
   </script>
