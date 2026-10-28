@@ -248,6 +248,9 @@
       const message = document.getElementById('contact-message').value;
 
       try {
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY7ou_YM7It4LaKm4m63LyImWNfoQUlq4mdKOpFV1lp3K4fx1coa-yNCzkZIRzA3QB/exec';
+        // Send to Google Apps Script & Express Backend
+        fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, subject, message }) });
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

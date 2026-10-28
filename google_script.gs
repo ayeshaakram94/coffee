@@ -6,7 +6,7 @@
 // 4. Select type: 'Web app'
 // 5. Set 'Execute as': 'Me'
 // 6. Set 'Who has access': 'Anyone'
-// 7. Copy the Web App URL and use it in your frontend contact form fetch request.
+// Deployment URL: https://script.google.com/macros/s/AKfycbwY7ou_YM7It4LaKm4m63LyImWNfoQUlq4mdKOpFV1lp3K4fx1coa-yNCzkZIRzA3QB/exec
 
 function doPost(e) {
   try {
